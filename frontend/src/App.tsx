@@ -87,7 +87,7 @@ export function App() {
       ) : null}
 
       <div className="top-bar">
-        <span>Goalscape Graph</span>
+        <span>3D Goalscape</span>
         <span>
           {graph && visibleGraph
             ? `${visibleGraph.nodes.length}/${graph.nodes.length} nodes · ${visibleGraph.edges.length}/${graph.edges.length} links`
