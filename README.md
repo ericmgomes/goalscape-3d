@@ -58,6 +58,35 @@ GOALSCAPE_PROJECT_ID=<project-id>
 
 ## Deploy Frontend and Backend Together
 
+### Railway
+
+Railway is the easiest option if you want a normal long-running Node/Express service. This repo includes `railway.json`.
+
+1. Push this repo to GitHub.
+2. In Railway, create a new project from the GitHub repo.
+3. Railway should use:
+
+```bash
+Build Command: npm ci && npm run build
+Start Command: npm start
+Healthcheck Path: /health
+```
+
+4. Set environment variables:
+
+```bash
+GOALSCAPE_MCP_URL=<public Goalscape MCP Server URL>
+BACKEND_PUBLIC_URL=https://<your-railway-domain>
+```
+
+`BACKEND_PUBLIC_URL` is important for the Goalscape OAuth callback. If Goalscape requires an allowlisted redirect URI, use:
+
+```bash
+https://<your-railway-domain>/auth/callback
+```
+
+### Render
+
 Use Render Web Service for the simplest free deployment. This repository includes `render.yaml` for a single Node service that:
 
 - builds the backend and frontend
