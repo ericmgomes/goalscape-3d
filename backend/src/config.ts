@@ -4,6 +4,7 @@ export type AppConfig = {
   port: number;
   goalscapeMcpUrl?: string;
   backendPublicUrl: string;
+  goalscapeOAuthScope?: string;
 };
 
 export function loadConfig(): AppConfig {
@@ -12,6 +13,7 @@ export function loadConfig(): AppConfig {
   return {
     port,
     goalscapeMcpUrl: process.env.GOALSCAPE_MCP_URL,
-    backendPublicUrl: process.env.BACKEND_PUBLIC_URL ?? process.env.RENDER_EXTERNAL_URL ?? `http://localhost:${port}`
+    backendPublicUrl: process.env.BACKEND_PUBLIC_URL ?? process.env.RENDER_EXTERNAL_URL ?? `http://localhost:${port}`,
+    goalscapeOAuthScope: process.env.GOALSCAPE_OAUTH_SCOPE
   };
 }

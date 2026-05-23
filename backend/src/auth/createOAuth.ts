@@ -20,7 +20,7 @@ export function createOAuthBundle(config: AppConfig): OAuthBundle | undefined {
     grant_types: ['authorization_code', 'refresh_token'],
     response_types: ['code'],
     token_endpoint_auth_method: 'none',
-    scope: 'openid email'
+    ...(config.goalscapeOAuthScope ? { scope: config.goalscapeOAuthScope } : {})
   };
 
   const provider = new InMemoryOAuthProvider(callbackUrl, clientMetadata);
