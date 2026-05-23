@@ -55,3 +55,33 @@ The viewer lists accessible Goalscape projects after OAuth. Select a project in 
 ```bash
 GOALSCAPE_PROJECT_ID=<project-id>
 ```
+
+## Deploy Frontend and Backend Together
+
+Use Render Web Service for the simplest free deployment. This repository includes `render.yaml` for a single Node service that:
+
+- builds the backend and frontend
+- starts the Express backend
+- serves `frontend/dist` from the same backend process
+- lets the browser call `/api` and `/auth` on the same origin
+
+Render setup:
+
+1. Push this repo to GitHub.
+2. In Render, create a new Blueprint or Web Service from the repo.
+3. Use the included `render.yaml`, or set:
+
+```bash
+Build Command: npm ci && npm run build
+Start Command: npm run start -w backend
+```
+
+4. Set environment variables:
+
+```bash
+GOALSCAPE_MCP_URL=<public Goalscape MCP Server URL>
+```
+
+`BACKEND_PUBLIC_URL` is optional on Render because the app uses `RENDER_EXTERNAL_URL` for OAuth callbacks. Set it manually only if you use a custom domain.
+
+Important: Render can host this viewer, but it cannot reach a Goalscape MCP Server running only on your computer at `localhost`. The Goalscape MCP endpoint must be publicly reachable by the Render service, or you need to run the viewer locally.

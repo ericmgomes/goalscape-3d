@@ -1,7 +1,7 @@
 import type { ProjectListResponse } from '../models/project';
 import { GraphApiError } from './graphApi';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:4000';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? (import.meta.env.DEV ? 'http://localhost:4000' : '');
 
 export async function fetchProjects(): Promise<ProjectListResponse> {
   const response = await fetch(`${API_BASE_URL}/api/projects`);

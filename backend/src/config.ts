@@ -12,6 +12,6 @@ export function loadConfig(): AppConfig {
   return {
     port,
     goalscapeMcpUrl: process.env.GOALSCAPE_MCP_URL,
-    backendPublicUrl: process.env.BACKEND_PUBLIC_URL ?? `http://localhost:${port}`
+    backendPublicUrl: process.env.BACKEND_PUBLIC_URL ?? process.env.RENDER_EXTERNAL_URL ?? `http://localhost:${port}`
   };
 }

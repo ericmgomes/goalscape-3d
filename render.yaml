@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: goalscape-3d-viewer
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start -w backend
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: GOALSCAPE_MCP_URL
+        sync: false

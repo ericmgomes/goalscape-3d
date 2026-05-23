@@ -1,3 +1,6 @@
+import { existsSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import cors from 'cors';
 import express from 'express';
 import { createAuthRouter } from './api/authRoutes.js';
@@ -47,6 +50,28 @@ export function createApp(dependencies: AppDependencies = {}) {
 
   app.use('/api', createGraphRouter(graphService, goalscapeService));
   app.use('/api', createProjectRouter(goalscapeService, projectSelection));
+  serveFrontend(app);
 
   return app;
+}
+
+function serveFrontend(app: express.Express) {
+  const currentFile = fileURLToPath(import.meta.url);
+  const currentDir = path.dirname(currentFile);
+  const frontendDistPath = path.resolve(currentDir, '../../frontend/dist');
+  const indexPath = path.join(frontendDistPath, 'index.html');
+
+  if (!existsSync(indexPath)) {
+    return;
+  }
+
+  app.use(express.static(frontendDistPath));
+  app.get('*', (request, response, next) => {
+    if (!request.accepts('html')) {
+      next();
+      return;
+    }
+
+    response.sendFile(indexPath);
+  });
 }
