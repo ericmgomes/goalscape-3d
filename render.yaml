@@ -3,12 +3,14 @@ services:
     name: goalscape-3d-viewer
     runtime: node
     plan: free
-    buildCommand: npm install && npm run build
+    buildCommand: npm install --include=dev && npm run build
     startCommand: npm start
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
         value: production
+      - key: NPM_CONFIG_PRODUCTION
+        value: false
       - key: NODE_VERSION
         value: 22
       - key: GOALSCAPE_MCP_URL
