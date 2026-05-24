@@ -5,12 +5,14 @@ import cors from 'cors';
 import express from 'express';
 import { createAuthRouter } from './api/authRoutes.js';
 import { createGraphRouter } from './api/graphRoutes.js';
+import { createOpenAiRouter } from './api/openAiRoutes.js';
 import { createProjectRouter } from './api/projectRoutes.js';
 import { createOAuthBundle } from './auth/createOAuth.js';
 import { loadConfig, type AppConfig } from './config.js';
 import { McpClient } from './mcp/McpClient.js';
 import { GoalscapeService, type GoalscapeReader } from './services/GoalscapeService.js';
 import { GraphService } from './services/GraphService.js';
+import { OpenAiMcpProbeService } from './services/OpenAiMcpProbeService.js';
 import { ProjectSelectionService } from './services/ProjectSelectionService.js';
 
 export type AppDependencies = {
@@ -50,6 +52,16 @@ export function createApp(dependencies: AppDependencies = {}) {
 
   app.use('/api', createGraphRouter(graphService, goalscapeService));
   app.use('/api', createProjectRouter(goalscapeService, projectSelection));
+  app.use(
+    '/api',
+    createOpenAiRouter(
+      new OpenAiMcpProbeService({
+        apiKey: config.openaiApiKey,
+        model: config.openaiModel,
+        goalscapeMcpUrl: config.goalscapeMcpUrl
+      })
+    )
+  );
   serveFrontend(app);
 
   return app;
