@@ -39,6 +39,27 @@ The frontend dev server uses `http://localhost:5180` by default.
 
 The frontend never connects to the Goalscape MCP Server directly. It only calls the backend REST API.
 
+## Obsidian Export
+
+After the graph can be loaded, export the current Goalscape graph as an Obsidian-ready ZIP:
+
+```bash
+curl -L http://localhost:4000/api/export/obsidian -o goalscape-obsidian-export.zip
+```
+
+Preview the generated file list:
+
+```bash
+curl http://localhost:4000/api/export/obsidian/preview
+```
+
+The ZIP contains:
+
+- `index.md`
+- one Markdown file per goal under `goals/`
+- YAML frontmatter with id, parent, level, progress, and importance
+- Obsidian wiki links between parents and children
+
 ## Goalscape MCP Tool Name
 
 After connecting OAuth, inspect available MCP tools:

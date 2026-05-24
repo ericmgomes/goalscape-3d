@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import cors from 'cors';
 import express from 'express';
 import { createAuthRouter } from './api/authRoutes.js';
+import { createExportRouter } from './api/exportRoutes.js';
 import { createGraphRouter } from './api/graphRoutes.js';
 import { createOpenAiRouter } from './api/openAiRoutes.js';
 import { createProjectRouter } from './api/projectRoutes.js';
@@ -52,6 +53,7 @@ export function createApp(dependencies: AppDependencies = {}) {
 
   app.use('/api', createGraphRouter(graphService, goalscapeService));
   app.use('/api', createProjectRouter(goalscapeService, projectSelection));
+  app.use('/api', createExportRouter(graphService));
   app.use(
     '/api',
     createOpenAiRouter(
