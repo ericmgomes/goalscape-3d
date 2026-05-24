@@ -3,6 +3,7 @@ import { Breadcrumb } from './components/Breadcrumb';
 import { GraphStatus } from './components/GraphStatus';
 import { NodeInfoPanel } from './components/NodeInfoPanel';
 import { NodeContextMenu } from './components/NodeContextMenu';
+import { ObsidianExportButton } from './components/ObsidianExportButton';
 import { ProjectPicker } from './components/ProjectPicker';
 import { Tooltip } from './components/Tooltip';
 import { useGoalGraph } from './hooks/useGoalGraph';
@@ -88,11 +89,14 @@ export function App() {
 
       <div className="top-bar">
         <span>3D Goalscape</span>
-        <span>
-          {graph && visibleGraph
-            ? `${visibleGraph.nodes.length}/${graph.nodes.length} nodes · ${visibleGraph.edges.length}/${graph.edges.length} links`
-            : 'Connecting'}
-        </span>
+        <div className="top-bar-actions">
+          <ObsidianExportButton disabled={!graph} />
+          <span>
+            {graph && visibleGraph
+              ? `${visibleGraph.nodes.length}/${graph.nodes.length} nodes · ${visibleGraph.edges.length}/${graph.edges.length} links`
+              : 'Connecting'}
+          </span>
+        </div>
       </div>
 
       <ProjectPicker

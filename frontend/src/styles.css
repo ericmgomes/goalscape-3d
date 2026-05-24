@@ -56,6 +56,46 @@ select {
   pointer-events: none;
 }
 
+.top-bar-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  pointer-events: auto;
+}
+
+.obsidian-export-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid rgba(167, 139, 250, 0.4);
+  border-radius: 8px;
+  background: rgba(30, 20, 54, 0.64);
+  color: #ede9fe;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 700;
+  backdrop-filter: blur(18px);
+}
+
+.obsidian-export-button:hover:not(:disabled) {
+  border-color: rgba(196, 181, 253, 0.72);
+  background: rgba(76, 29, 149, 0.58);
+}
+
+.obsidian-export-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.obsidian-export-button-error {
+  border-color: rgba(248, 113, 113, 0.58);
+  color: #fecaca;
+}
+
+
 .project-picker {
   position: absolute;
   top: 48px;

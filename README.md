@@ -16,8 +16,6 @@ GOALSCAPE_MCP_URL=http://localhost:3001/mcp
 PORT=4000
 BACKEND_PUBLIC_URL=http://localhost:4000
 GOALSCAPE_OAUTH_SCOPE=
-OPENAI_API_KEY=
-OPENAI_MODEL=gpt-5-mini
 ```
 
 Create `frontend/.env` if the backend is not on the default URL:
@@ -139,22 +137,5 @@ BACKEND_PUBLIC_URL=https://<your-render-domain-or-custom-domain>
 `BACKEND_PUBLIC_URL` is used for OAuth callbacks. Set it to the exact public URL you use to open the app, for example `https://goalscape-3d-viewer.onrender.com` or `https://3dgoalscape.ericgomes.me`.
 
 `GOALSCAPE_OAUTH_SCOPE` is optional. Leave it empty unless the Goalscape MCP OAuth server requires a specific scope.
-
-### OpenAI MCP Probe
-
-If direct Goalscape OAuth blocks this app's domain, you can test whether OpenAI can access the Goalscape MCP server as a remote MCP tool:
-
-```bash
-OPENAI_API_KEY=<your-openai-api-key>
-OPENAI_MODEL=gpt-5-mini
-```
-
-Then call:
-
-```bash
-curl https://<your-app-domain>/api/openai/mcp-probe
-```
-
-This endpoint is diagnostic. It checks whether OpenAI can list/use the Goalscape MCP server before the main graph flow is changed to depend on OpenAI.
 
 Important: Render can host this viewer, but it cannot reach a Goalscape MCP Server running only on your computer at `localhost`. The Goalscape MCP endpoint must be publicly reachable by the Render service, or you need to run the viewer locally.
