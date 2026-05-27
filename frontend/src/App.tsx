@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { Breadcrumb } from './components/Breadcrumb';
 import { GraphStatus } from './components/GraphStatus';
 import { NodeInfoPanel } from './components/NodeInfoPanel';
@@ -12,6 +12,10 @@ import type { GoalNode } from './models/graph';
 import { GoalGraphScene, type CameraState, type GoalGraphSceneHandle } from './scenes/GoalGraphScene';
 import { getVisibleGraph, initialExpandedNodeIds, toggleExpandedNode } from './utils/visibleGraph';
 
+const ForceGraphScene = lazy(() =>
+  import('./scenes/ForceGraphScene').then((module) => ({ default: module.ForceGraphScene }))
+);
+
 export function App() {
   const projectState = useProjects();
   const graphState = useGoalGraph(projectState.status === 'ready' ? projectState.selectedProject?.id : undefined);
@@ -20,6 +24,7 @@ export function App() {
   const [hoveredNodeId, setHoveredNodeId] = useState<string>();
   const [expandedNodeIds, setExpandedNodeIds] = useState<Set<string>>(new Set());
   const [contextMenu, setContextMenu] = useState<{ nodeId: string; x: number; y: number }>();
+  const [viewMode, setViewMode] = useState<'custom' | 'force'>('custom');
   const [initialCameraState] = useState<CameraState | undefined>(() => readCameraStateFromUrl());
   const [cameraState, setCameraState] = useState<CameraState | undefined>(initialCameraState);
   const sceneRef = useRef<GoalGraphSceneHandle>(null);
@@ -60,37 +65,76 @@ export function App() {
     });
   }, [cameraFocusNodeId, cameraState, expandedNodeIds, graph]);
 
+  function handleSelectNode(node: GoalNode) {
+    if (!graph) {
+      return;
+    }
+
+    setSelectedNodeId(node.id);
+    setCameraFocusNodeId(node.id);
+
+    if (hasVisibleChildren(node.id, graph)) {
+      setExpandedNodeIds((current) => toggleExpandedNode(node.id, current, graph));
+    }
+  }
+
   return (
     <main className="app-shell">
       {graph && visibleGraph ? (
-        <GoalGraphScene
-          ref={sceneRef}
-          graph={visibleGraph}
-          layoutGraphSource={graph}
-          selectedNodeId={selectedNodeId}
-          focusNodeId={cameraFocusNodeId}
-          expandedNodeIds={expandedNodeIds}
-          initialCameraState={initialCameraState}
-          onCameraStateChange={setCameraState}
-          onSelectNode={(node: GoalNode) => {
-            setSelectedNodeId(node.id);
-            setCameraFocusNodeId(node.id);
-            if (hasVisibleChildren(node.id, graph)) {
-              setExpandedNodeIds((current) => toggleExpandedNode(node.id, current, graph));
-            }
-          }}
-          onNodeContextMenu={(node, point) => {
-            setSelectedNodeId(node.id);
-            setContextMenu({ nodeId: node.id, x: point.x, y: point.y });
-          }}
-          onHoverNode={(node?: GoalNode) => setHoveredNodeId(node?.id)}
-        />
+        viewMode === 'custom' ? (
+          <GoalGraphScene
+            ref={sceneRef}
+            graph={visibleGraph}
+            layoutGraphSource={graph}
+            selectedNodeId={selectedNodeId}
+            focusNodeId={cameraFocusNodeId}
+            expandedNodeIds={expandedNodeIds}
+            initialCameraState={initialCameraState}
+            onCameraStateChange={setCameraState}
+            onSelectNode={handleSelectNode}
+            onNodeContextMenu={(node, point) => {
+              setSelectedNodeId(node.id);
+              setContextMenu({ nodeId: node.id, x: point.x, y: point.y });
+            }}
+            onHoverNode={(node?: GoalNode) => setHoveredNodeId(node?.id)}
+          />
+        ) : (
+          <Suspense fallback={<div className="scene-loading">Loading force graph</div>}>
+            <ForceGraphScene
+              graph={visibleGraph}
+              selectedNodeId={selectedNodeId}
+              expandedNodeIds={expandedNodeIds}
+              onSelectNode={handleSelectNode}
+              onNodeContextMenu={(node, point) => {
+                setSelectedNodeId(node.id);
+                setContextMenu({ nodeId: node.id, x: point.x, y: point.y });
+              }}
+              onHoverNode={(node?: GoalNode) => setHoveredNodeId(node?.id)}
+            />
+          </Suspense>
+        )
       ) : null}
 
       <div className="top-bar">
         <span>3D Goalscape</span>
         <div className="top-bar-actions">
           <ObsidianExportButton disabled={!graph} />
+          <div className="view-mode-toggle" role="group" aria-label="Graph view mode">
+            <button
+              type="button"
+              className={viewMode === 'custom' ? 'view-mode-active' : ''}
+              onClick={() => setViewMode('custom')}
+            >
+              Custom
+            </button>
+            <button
+              type="button"
+              className={viewMode === 'force' ? 'view-mode-active' : ''}
+              onClick={() => setViewMode('force')}
+            >
+              Force
+            </button>
+          </div>
           <span>
             {graph && visibleGraph
               ? `${visibleGraph.nodes.length}/${graph.nodes.length} nodes · ${visibleGraph.edges.length}/${graph.edges.length} links`

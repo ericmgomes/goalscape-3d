@@ -41,6 +41,24 @@ select {
   inset: 0;
 }
 
+.force-graph-scene {
+  position: absolute;
+  inset: 0;
+}
+
+.force-graph-scene canvas {
+  display: block;
+}
+
+.scene-loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: rgba(224, 242, 254, 0.78);
+  font-size: 0.9rem;
+}
+
 .top-bar {
   position: absolute;
   top: 18px;
@@ -93,6 +111,38 @@ select {
 .obsidian-export-button-error {
   border-color: rgba(248, 113, 113, 0.58);
   color: #fecaca;
+}
+
+.view-mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 3px;
+  border: 1px solid rgba(125, 211, 252, 0.24);
+  border-radius: 8px;
+  background: rgba(6, 10, 19, 0.68);
+  backdrop-filter: blur(18px);
+}
+
+.view-mode-toggle button {
+  min-height: 24px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: rgba(224, 242, 254, 0.72);
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0 9px;
+}
+
+.view-mode-toggle button:hover {
+  color: #f8fafc;
+}
+
+.view-mode-toggle .view-mode-active {
+  background: rgba(14, 165, 233, 0.2);
+  color: #e0f2fe;
 }
 
 
