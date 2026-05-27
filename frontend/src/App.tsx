@@ -15,6 +15,14 @@ import { getVisibleGraph, initialExpandedNodeIds, toggleExpandedNode } from './u
 const ForceGraphScene = lazy(() =>
   import('./scenes/ForceGraphScene').then((module) => ({ default: module.ForceGraphScene }))
 );
+const SigmaGraphScene = lazy(() =>
+  import('./scenes/SigmaGraphScene').then((module) => ({ default: module.SigmaGraphScene }))
+);
+const CosmographScene = lazy(() =>
+  import('./scenes/CosmographScene').then((module) => ({ default: module.CosmographScene }))
+);
+
+type ViewMode = 'custom' | 'force' | 'sigma' | 'cosmograph';
 
 export function App() {
   const projectState = useProjects();
@@ -24,7 +32,7 @@ export function App() {
   const [hoveredNodeId, setHoveredNodeId] = useState<string>();
   const [expandedNodeIds, setExpandedNodeIds] = useState<Set<string>>(new Set());
   const [contextMenu, setContextMenu] = useState<{ nodeId: string; x: number; y: number }>();
-  const [viewMode, setViewMode] = useState<'custom' | 'force'>('custom');
+  const [viewMode, setViewMode] = useState<ViewMode>('custom');
   const [initialCameraState] = useState<CameraState | undefined>(() => readCameraStateFromUrl());
   const [cameraState, setCameraState] = useState<CameraState | undefined>(initialCameraState);
   const sceneRef = useRef<GoalGraphSceneHandle>(null);
@@ -98,7 +106,7 @@ export function App() {
             }}
             onHoverNode={(node?: GoalNode) => setHoveredNodeId(node?.id)}
           />
-        ) : (
+        ) : viewMode === 'force' ? (
           <Suspense fallback={<div className="scene-loading">Loading force graph</div>}>
             <ForceGraphScene
               graph={visibleGraph}
@@ -112,7 +120,35 @@ export function App() {
               onHoverNode={(node?: GoalNode) => setHoveredNodeId(node?.id)}
             />
           </Suspense>
-        )
+        ) : viewMode === 'sigma' ? (
+          <Suspense fallback={<div className="scene-loading">Loading sigma graph</div>}>
+            <SigmaGraphScene
+              graph={visibleGraph}
+              selectedNodeId={selectedNodeId}
+              expandedNodeIds={expandedNodeIds}
+              onSelectNode={handleSelectNode}
+              onNodeContextMenu={(node, point) => {
+                setSelectedNodeId(node.id);
+                setContextMenu({ nodeId: node.id, x: point.x, y: point.y });
+              }}
+              onHoverNode={(node?: GoalNode) => setHoveredNodeId(node?.id)}
+            />
+          </Suspense>
+        ) : viewMode === 'cosmograph' ? (
+          <Suspense fallback={<div className="scene-loading">Loading Cosmograph</div>}>
+            <CosmographScene
+              graph={visibleGraph}
+              selectedNodeId={selectedNodeId}
+              expandedNodeIds={expandedNodeIds}
+              onSelectNode={handleSelectNode}
+              onNodeContextMenu={(node, point) => {
+                setSelectedNodeId(node.id);
+                setContextMenu({ nodeId: node.id, x: point.x, y: point.y });
+              }}
+              onHoverNode={(node?: GoalNode) => setHoveredNodeId(node?.id)}
+            />
+          </Suspense>
+        ) : null
       ) : null}
 
       <div className="top-bar">
@@ -133,6 +169,20 @@ export function App() {
               onClick={() => setViewMode('force')}
             >
               Force
+            </button>
+            <button
+              type="button"
+              className={viewMode === 'sigma' ? 'view-mode-active' : ''}
+              onClick={() => setViewMode('sigma')}
+            >
+              Sigma
+            </button>
+            <button
+              type="button"
+              className={viewMode === 'cosmograph' ? 'view-mode-active' : ''}
+              onClick={() => setViewMode('cosmograph')}
+            >
+              Cosmograph
             </button>
           </div>
           <span>

@@ -50,6 +50,37 @@ select {
   display: block;
 }
 
+.sigma-graph-scene {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 48%, rgba(14, 165, 233, 0.1), transparent 34%),
+    #05070d;
+}
+
+.sigma-graph-scene canvas {
+  display: block;
+}
+
+.cosmograph-scene {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 48%, rgba(14, 165, 233, 0.1), transparent 34%),
+    #05070d;
+}
+
+.cosmograph-scene,
+.cosmograph-canvas,
+.cosmograph-canvas canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.cosmograph-canvas canvas {
+  display: block;
+}
+
 .scene-loading {
   position: absolute;
   inset: 0;

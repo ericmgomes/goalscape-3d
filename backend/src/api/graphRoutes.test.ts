@@ -39,4 +39,5 @@ describe('graph API', () => {
       message: 'MCP server is offline.'
     });
   });
+
 });
